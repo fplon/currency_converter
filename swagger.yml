@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info: 
+  title: "Currency Converter"
+  description: "An API converting an amount for one currency to another currency"
+  version: "1.0.0"
+
+servers: 
+   - url: "/api"
+
+components: 
+  schemas: 
+    Rate: 
+      type: "object"
+      required: 
+        - rate_date
+        - ccy_code
+      properties: 
+        rate: 
+          type: "number"
+        ccy_code:  
+          type: "string"
+        rate_date: 
+          type: "string"
+  parameters: 
+    rate_date: 
+      name: "rate_date"
+      description: "Date of exchange rate to get"
+      in: path
+      required: True
+      schema: 
+        type: "string"
+    ccy_code: 
+      name: "ccy_code"
+      description: "3 letter currency code"
+      in: path
+      required: True
+      schema: 
+        type: "string"
+
+paths: 
+  /rates:
+    get: 
+      operationId: "rates.read_all"
+      tags: 
+        - "Rates"
+      summary: "Read the list of exchange rates"
+      responses: 
+        "200": 
+          description: "Successfully read rates list"
+    post: 
+      operationId: "rates.create"
+      tags: 
+        - Rates
+      summary: "Create exchange rates"
+      requestBody: 
+          description: "Rates to create"
+          required: True
+          content: 
+            application/json: 
+              schema: 
+                x-body-name: "rate"
+                $ref: "#/components/schemas/Rate"
+      responses: 
+        "201": 
+          description: "Successfully created rate"
+  /rates/{rate_date}&{ccy_code}:
+    get: 
+      operationId: "rates.read_one"
+      tags: 
+        - Rates
+      summary: "Read one rate"
+      parameters: 
+        - $ref: "#/components/parameters/rate_date"
+        - $ref: "#/components/parameters/ccy_code"
+      responses: 
+        "200": 
+          description: "Successfully read rate"
+    put:
+      tags:
+        - Rates
+      operationId: "rates.update"
+      summary: "Update a rate"
+      parameters:
+        - $ref: "#/components/parameters/rate_date"
+        - $ref: "#/components/parameters/ccy_code"
+      responses:
+        "200":
+          description: "Successfully updated rate"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "rate"
+              $ref: "#/components/schemas/Rate"
+    delete:
+      tags:
+        - Rates
+      operationId: "rates.delete"
+      summary: "Delete a rate"
+      parameters:
+        - $ref: "#/components/parameters/rate_date"
+        - $ref: "#/components/parameters/ccy_code"
+      responses:
+        "204":
+          description: "Successfully deleted person"
